@@ -1,0 +1,1 @@
+# infer_huggingface_semantic_segmentation
