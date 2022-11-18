@@ -50,9 +50,9 @@ class InferHuggingFaceSemanticSegmentationParam(core.CWorkflowTaskParam):
         # Set parameters values from Ikomia application
         # Parameters values are stored as string and accessible like a python dict
         self.cuda = strtobool(param_map["cuda"])
-        self.model_card = param_map["Model"]
+        self.model_card = param_map["model_name_or_path"]
         self.model_loading = param_map["model_loading"]
-        self.background = strtobool(param_map["background"])
+        self.background = strtobool(param_map["background_idx"])
         self.update = strtobool(param_map["update"])
 
     def getParamMap(self):
@@ -60,9 +60,9 @@ class InferHuggingFaceSemanticSegmentationParam(core.CWorkflowTaskParam):
         # Create the specific dict structure (string container)
         param_map = core.ParamMap()
         param_map["cuda"] = str(self.cuda)
-        param_map["Model"] = str(self.model_card)
+        param_map["model_name_or_path"] = str(self.model_card)
         param_map["model_loading"] = str(self.model_loading)
-        param_map["background"] = str(self.background)
+        param_map["background_idx"] = str(self.background)
         param_map["update"] = str(self.update)
         return param_map
 

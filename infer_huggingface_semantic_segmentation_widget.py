@@ -47,7 +47,7 @@ class InferHuggingFaceSemanticSegmentationWidget(core.CWorkflowTaskWidget):
                         self.parameters.cuda and is_available())
 
         # Model loading method
-        self.combo_model = pyqtutils.append_combo(self.gridLayout, "Model loading")
+        self.combo_model = pyqtutils.append_combo(self.gridLayout, "Model loading method:")
         self.combo_model.addItem("From Hugging Face Model Hub")
         self.combo_model.addItem("From checkpoint (local)")
         self.combo_model.setCurrentText(self.parameters.model_loading)
@@ -55,13 +55,13 @@ class InferHuggingFaceSemanticSegmentationWidget(core.CWorkflowTaskWidget):
         # Model
         self.load_model = pyqtutils.append_edit(
                                                 self.gridLayout,
-                                                "Model name/Checkpoint path",
+                                                "Model name or Checkpoint path",
                                                 self.parameters.model_card
                                                 )
 
         # Background label
         self.check_background = pyqtutils.append_check(
-                                                self.gridLayout, "Background label set to index 0",
+                                                self.gridLayout, "Background label set at index 0",
                                                 self.parameters.background
                                                 )
 
