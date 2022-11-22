@@ -2,18 +2,27 @@
 
 This plugin proposes inference for semantic segmentation using transformer models from Hugging Face. 
 
-Models can be loaded either from your fine-tuned model (local path) or from the Hugging Face Hub using the model name (e.g. [nvidia/segformer-b5-finetuned-ade-640-640](https://huggingface.co/nvidia/segformer-b5-finetuned-ade-640-640))."
+Models can be loaded from:
+
+- Your fine-tuned model (local path folder containing model weights and config file)
+
+- The [Hugging Face Hub](https://huggingface.co/models?pipeline_tag=image-segmentation) using the model name, e.g.:  
+    - [nvidia/segformer-b5-finetuned-ade-640-640](https://huggingface.co/nvidia/segformer-b5-finetuned-ade-640-640) 
+    - [microsoft/beit-base-finetuned-ade-640-640](https://huggingface.co/microsoft/beit-base-finetuned-ade-640-640)
+
+
+
 
 The following models can be use with this plugin: 
 
-•	BEiT 
+-	BEiT 
 
-•	Data2VecVision 
+-	Data2VecVision 
 
-•	DPT 
+-	DPT 
 
-•	MobileNetV2 
+-	MobileNetV2 
 
-•	MobileViT 
+-	MobileViT 
 
-•	SegFormer 
+-	SegFormer 
