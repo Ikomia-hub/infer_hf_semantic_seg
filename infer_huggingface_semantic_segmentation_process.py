@@ -41,7 +41,7 @@ class InferHuggingFaceSemanticSegmentationParam(core.CWorkflowTaskParam):
         core.CWorkflowTaskParam.__init__(self)
         # Place default value initialization here
         self.cuda = torch.cuda.is_available()
-        self.model_card = None
+        self.model_card = "nvidia/segformer-b2-finetuned-ade-512-512"
         self.model_loading = "From Hugging Face Model Hub"
         self.background = False
         self.update = False
@@ -99,7 +99,7 @@ class InferHuggingFaceSemanticSegmentation(dataprocess.C2dImageTask):
         param = self.getParam()
 
         # Image pre-pocessing (image transformation and conversion to PyTorch tensor)
-        pixel_val = self.feature_extractor(image, return_tensors="pt").pixel_values
+        pixel_val = self.feature_extractor(image, return_tensors="pt", resample=0).pixel_values
         if param.cuda is True:
             pixel_val = pixel_val.cuda()
 
