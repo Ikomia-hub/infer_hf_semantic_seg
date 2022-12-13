@@ -53,7 +53,7 @@ class InferHuggingFaceSemanticSegmentationWidget(core.CWorkflowTaskWidget):
         self.combo_model.setCurrentText(self.parameters.model_loading)
 
         # Model
-        self.load_model = pyqtutils.append_edit(
+        self.load_model = pyqtutils.append_browse_file(
                                                 self.gridLayout,
                                                 "Model name or Checkpoint path",
                                                 self.parameters.model_card
@@ -76,7 +76,7 @@ class InferHuggingFaceSemanticSegmentationWidget(core.CWorkflowTaskWidget):
         self.parameters.update = True
         self.parameters.model_loading = self.combo_model.currentText()
         self.parameters.cuda = self.check_cuda.isChecked()
-        self.parameters.model_card = self.load_model.text()
+        self.parameters.model_card = self.load_model.path
         self.parameters.background = self.check_background.isChecked()
         # Send signal to launch the process
         self.emitApply(self.parameters)
