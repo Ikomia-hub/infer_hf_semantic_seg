@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 def test(t, data_dict):
     logger.info("===== Test::infer Hugging Face semantic segmentation=====")
     params = task.get_parameters(t)
-    params["model_name_or_path"] = "nvidia/segformer-b5-finetuned-ade-640-640"
+    params["model_name"] = "nvidia/segformer-b5-finetuned-ade-640-640"
     img = cv2.imread(data_dict["images"]["detection"]["coco"])[::-1]
     input_img_0 = t.getInput(0)
     input_img_0.setImage(img)
