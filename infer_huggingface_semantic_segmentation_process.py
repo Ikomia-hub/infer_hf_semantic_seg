@@ -41,8 +41,9 @@ class InferHuggingFaceSemanticSegmentationParam(core.CWorkflowTaskParam):
         core.CWorkflowTaskParam.__init__(self)
         # Place default value initialization here
         self.cuda = torch.cuda.is_available()
-        self.model_card = "nvidia/segformer-b2-finetuned-ade-512-512"
-        self.model_loading = "From Hugging Face Model Hub"
+        self.model_name = "nvidia/segformer-b2-finetuned-ade-512-512"
+        self.checkpoint = False
+        self.checkpoint_path = ""
         self.background = False
         self.update = False
 
@@ -50,8 +51,9 @@ class InferHuggingFaceSemanticSegmentationParam(core.CWorkflowTaskParam):
         # Set parameters values from Ikomia application
         # Parameters values are stored as string and accessible like a python dict
         self.cuda = strtobool(param_map["cuda"])
-        self.model_card = param_map["model_name_or_path"]
-        self.model_loading = param_map["model_loading"]
+        self.model_name = param_map["model_name"]
+        self.pretrained = strtobool(param_map["checkpoint"])
+        self.checkpoint_path = param_map["checkpoint_path"]
         self.background = strtobool(param_map["background_idx"])
         self.update = strtobool(param_map["update"])
 
@@ -60,8 +62,9 @@ class InferHuggingFaceSemanticSegmentationParam(core.CWorkflowTaskParam):
         # Create the specific dict structure (string container)
         param_map = core.ParamMap()
         param_map["cuda"] = str(self.cuda)
-        param_map["model_name_or_path"] = str(self.model_card)
-        param_map["model_loading"] = str(self.model_loading)
+        param_map["model_name"] = str(self.model_name)
+        param_map["checkpoint"] = str(self.checkpoint)
+        param_map["checkpoint_path"] = self.checkpoint_path
         param_map["background_idx"] = str(self.background)
         param_map["update"] = str(self.update)
         return param_map
@@ -144,18 +147,21 @@ class InferHuggingFaceSemanticSegmentation(dataprocess.C2dImageTask):
         param = self.getParam()
 
         if param.update or self.model is None:
-        # Feature extractor selection
-            if param.model_loading == "From Hugging Face Model Hub":
-                self.feature_extractor = AutoFeatureExtractor.from_pretrained(param.model_card)
+            model_id = None
+            # Feature extractor selection
+            if param.checkpoint is False:
+                model_id = param.model_name
+                self.feature_extractor = AutoFeatureExtractor.from_pretrained(model_id)
             else:
-                model_list_path = os.path.join(param.model_card, "config.json")
+                model_list_path = os.path.join(param.checkpoint_path, "config.json")
+                model_id = param.checkpoint_path
                 with open(str(model_list_path), "r") as f:
                     model_name_list = json.load(f)
                 feature_extractor_id = model_name_list['_name_or_path']
                 self.feature_extractor = AutoFeatureExtractor.from_pretrained(feature_extractor_id)
 
             # Loading model weight
-            self.model = AutoModelForSemanticSegmentation.from_pretrained(param.model_card)
+            self.model = AutoModelForSemanticSegmentation.from_pretrained(model_id)
             self.device = torch.device("cuda") if param.cuda else torch.device("cpu")
             self.model.to(self.device)
             print("Will run on {}".format(self.device.type))

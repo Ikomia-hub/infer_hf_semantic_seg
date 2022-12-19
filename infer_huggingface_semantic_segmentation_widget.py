@@ -22,7 +22,9 @@ from infer_huggingface_semantic_segmentation.infer_huggingface_semantic_segmenta
 from torch.cuda import is_available
 # PyQt GUI framework
 from PyQt5.QtWidgets import *
-
+from infer_huggingface_semantic_segmentation.utils import Autocomplete
+import os
+import timm
 
 # --------------------
 # - Class which implements widget associated with the process
@@ -41,23 +43,41 @@ class InferHuggingFaceSemanticSegmentationWidget(core.CWorkflowTaskWidget):
         # Create layout : QGridLayout by default
         self.gridLayout = QGridLayout()
 
+ 
+
+        # Loading model from list
+        model_list_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                                                        "model_list.txt")
+        model_list_file = open(model_list_path, "r")
+
+        model_list = model_list_file.read()
+        model_list = model_list.split("\n")
+        self.combo_model = Autocomplete(model_list, parent=None, i=True, allow_duplicates=False)
+        self.label_model = QLabel("Model name")
+        self.gridLayout.addWidget(self.combo_model, 0, 1)
+        self.gridLayout.addWidget(self.label_model, 0, 0)
+        self.combo_model.setCurrentText(self.parameters.model_name)
+        model_list_file.close()
+
+        self.check_checkoint = pyqtutils.append_check(self.gridLayout, "Model from checkpoint(local)",
+                                                       self.parameters.checkpoint)
+
+        self.check_checkoint.stateChanged.connect(self.onStateChanged)
+
+        self.combo_model.setVisible(not self.check_checkoint.isChecked())
+        
+        # Loading moadel from checkpoint path
+        self.browse_ckpt = pyqtutils.append_browse_file(self.gridLayout,
+                                                        label="Checkpoint path",
+                                                        path=self.parameters.checkpoint_path,
+                                                        mode=QFileDialog.Directory)
+
+        self.browse_ckpt.setVisible(self.check_checkoint.isChecked())
+
         # Cuda
         self.check_cuda = pyqtutils.append_check(
                         self.gridLayout, "Cuda",
                         self.parameters.cuda and is_available())
-
-        # Model loading method
-        self.combo_model = pyqtutils.append_combo(self.gridLayout, "Model loading method:")
-        self.combo_model.addItem("From Hugging Face Model Hub")
-        self.combo_model.addItem("From checkpoint (local)")
-        self.combo_model.setCurrentText(self.parameters.model_loading)
-
-        # Model
-        self.load_model = pyqtutils.append_browse_file(
-                                                self.gridLayout,
-                                                "Model name or Checkpoint path",
-                                                self.parameters.model_card
-                                                )
 
         # Background label
         self.check_background = pyqtutils.append_check(
@@ -71,12 +91,18 @@ class InferHuggingFaceSemanticSegmentationWidget(core.CWorkflowTaskWidget):
         # Set widget layout
         self.setLayout(layout_ptr)
 
+    # Widget update on check
+    def onStateChanged(self, int):
+        self.browse_ckpt.setVisible(self.check_checkoint.isChecked())
+        self.combo_model.setVisible(not self.check_checkoint.isChecked())
+
     def onApply(self):
         # Apply button clicked slot
         self.parameters.update = True
-        self.parameters.model_loading = self.combo_model.currentText()
+        self.parameters.model_name = self.combo_model.currentText()
         self.parameters.cuda = self.check_cuda.isChecked()
-        self.parameters.model_card = self.load_model.path
+        self.parameters.checkpoint = self.check_checkoint.isChecked()
+        self.parameters.checkpoint_path = self.browse_ckpt.path
         self.parameters.background = self.check_background.isChecked()
         # Send signal to launch the process
         self.emitApply(self.parameters)
