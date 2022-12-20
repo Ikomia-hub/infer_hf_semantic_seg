@@ -41,5 +41,3 @@ apple/deeplabv3-mobilevit-x-small
 apple/deeplabv3-mobilevit-xx-small
 malra/segformer-b0-finetuned-segments-sidewalk-4
 malra/segformer-b5-segments-warehouse1
-jakka/segformer-b0-finetuned-warehouse-part-1-V2
-sayakpaul/mit-b0-finetuned-sidewalk-semantic
