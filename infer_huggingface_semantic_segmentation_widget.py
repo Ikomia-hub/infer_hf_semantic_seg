@@ -85,6 +85,14 @@ class InferHuggingFaceSemanticSegmentationWidget(core.CWorkflowTaskWidget):
                                                 self.parameters.background
                                                 )
 
+        # Link of some available models
+        urlLink = "<a href=\"https://huggingface.co/models?sort=downloads&search=segformer\">"\
+                 "List of Segformer models [Hugging Face Hub] </a>"
+        self.qlabelModelLink = QLabel(urlLink)
+        self.qlabelModelLink.setOpenExternalLinks(True)
+        self.gridLayout.addWidget(self.qlabelModelLink, 5, 0)
+
+
         # PyQt -> Qt wrapping
         layout_ptr = qtconversion.PyQtToQt(self.gridLayout)
 
