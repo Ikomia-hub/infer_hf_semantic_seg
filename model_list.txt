@@ -1,14 +1,9 @@
 microsoft/beit-base-finetuned-ade-640-640
 microsoft/beit-base-patch16-224-pt22k-ft22k
 microsoft/beit-base-patch16-224-pt22k
-microsoft/beit-base-patch16-224
-microsoft/beit-base-patch16-384
 microsoft/beit-large-finetuned-ade-640-640
 microsoft/beit-large-patch16-224-pt22k-ft22k
 microsoft/beit-large-patch16-224-pt22k
-microsoft/beit-large-patch16-224
-microsoft/beit-large-patch16-384
-microsoft/beit-large-patch16-512
 Intel/dpt-large-ade
 nvidia/segformer-b0-finetuned-ade-512-512
 nvidia/segformer-b0-finetuned-cityscapes-1024-1024
@@ -30,11 +25,6 @@ segments-tobias/segformer-b3-finetuned-segments-sidewalk
 nielsr/segformer-b0-finetuned-segments-sidewalk
 nickmuchi/segformer-b4-finetuned-segments-sidewalk
 nielsr/segformer-finetuned-sidewalk
-facebook/data2vec-vision-base
-facebook/data2vec-vision-large
-facebook/data2vec-vision-large-ft1k
-facebook/data2vec-vision-base-ft1k
-Matthijs/deeplabv3-mobilevit-small
 jakka/segformer-b0-finetuned-segments-sidewalk-4
 apple/deeplabv3-mobilevit-small
 apple/deeplabv3-mobilevit-x-small
