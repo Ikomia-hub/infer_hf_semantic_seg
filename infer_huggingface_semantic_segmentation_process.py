@@ -207,7 +207,7 @@ class InferHuggingFaceSemanticSegmentationFactory(dataprocess.CTaskFactory):
         self.info.description = "This plugin proposes inference for semantic segmentation"\
                                 "using transformers models from Hugging Face. It regroups"\
                                 "models covered by the Hugging Face class:"\
-                                "<AutoModelForSemanticSegmentation>. Models can be loaded either"\
+                                "AutoModelForSemanticSegmentation. Models can be loaded either"\
                                 "from your fine-tuned model (local) or from the Hugging Face Hub."
         # relative path -> as displayed in Ikomia application process tree
         self.info.path = "Plugins/Python/Segmentation"
