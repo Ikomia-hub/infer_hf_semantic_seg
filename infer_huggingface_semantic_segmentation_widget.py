@@ -54,7 +54,7 @@ class InferHuggingFaceSemanticSegmentationWidget(core.CWorkflowTaskWidget):
         model_list = model_list.split("\n")
         self.combo_model = Autocomplete(model_list, parent=None, i=True, allow_duplicates=False)
         self.label_model = QLabel("Model name")
-        self.gridLayout.addWidget(self.combo_model, 0, 1)
+        self.gridLayout.addWidget(self.combo_model, 1, 0)
         self.gridLayout.addWidget(self.label_model, 0, 0)
         self.combo_model.setCurrentText(self.parameters.model_name)
         model_list_file.close()
