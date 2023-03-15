@@ -1,5 +1,4 @@
 microsoft/beit-base-finetuned-ade-640-640
-microsoft/beit-large-finetuned-ade-640-640
 Intel/dpt-large-ade
 nvidia/segformer-b0-finetuned-ade-512-512
 nvidia/segformer-b0-finetuned-cityscapes-1024-1024
