@@ -204,20 +204,20 @@ class InferHuggingFaceSemanticSegmentationFactory(dataprocess.CTaskFactory):
         # Set process information as string here
         self.info.name = "infer_huggingface_semantic_segmentation"
         self.info.shortDescription = "Semantic segmentation using models from Hugging Face."
-        self.info.description = "This plugin proposes inference for semantic segmentation"\
-                                "using transformers models from Hugging Face. It regroups"\
+        self.info.description = "This plugin proposes inference for semantic segmentation "\
+                                "using transformers models from Hugging Face. It regroups "\
                                 "models covered by the Hugging Face class: "\
-                                "AutoModelForSemanticSegmentation. Models can be loaded either"\
+                                "AutoModelForSemanticSegmentation. Models can be loaded either "\
                                 "from your fine-tuned model (local) or from the Hugging Face Hub."
         # relative path -> as displayed in Ikomia application process tree
         self.info.path = "Plugins/Python/Segmentation"
         self.info.version = "1.0.0"
         self.info.iconPath = "icons/icon.png"
-        self.info.authors = "Thomas Wolf, Lysandre Debut, Victor Sanh, Julien Chaumond,"\
-                            "Clement Delangue, Anthony Moi, Pierric Cistac, Tim Rault,"\
-                            "Rémi Louf, Morgan Funtowicz, Joe Davison, Sam Shleifer,"\
-                            "Patrick von Platen, Clara Ma, Yacine Jernite, Julien Plu,"\
-                            "Canwen Xu, Teven Le Scao, Sylvain Gugger, Mariama Drame,"\
+        self.info.authors = "Thomas Wolf, Lysandre Debut, Victor Sanh, Julien Chaumond, "\
+                            "Clement Delangue, Anthony Moi, Pierric Cistac, Tim Rault, "\
+                            "Rémi Louf, Morgan Funtowicz, Joe Davison, Sam Shleifer, "\
+                            "Patrick von Platen, Clara Ma, Yacine Jernite, Julien Plu, "\
+                            "Canwen Xu, Teven Le Scao, Sylvain Gugger, Mariama Drame, "\
                             "Quentin Lhoest, Alexander M. Rush"
         self.info.article = "Huggingface's Transformers: State-of-the-art Natural Language Processing"
         self.info.journal = "EMNLP"
