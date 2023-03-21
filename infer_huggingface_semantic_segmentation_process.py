@@ -24,8 +24,6 @@ from transformers import AutoFeatureExtractor, AutoModelForSemanticSegmentation
 from ikomia.utils import strtobool
 import numpy as np
 import torch
-import numpy as np
-import random
 import os
 from torch import nn
 import json 
@@ -47,59 +45,56 @@ class InferHuggingFaceSemanticSegmentationParam(core.CWorkflowTaskParam):
         self.background = False
         self.update = False
 
-    def setParamMap(self, param_map):
+    def set_values(self, params):
         # Set parameters values from Ikomia application
         # Parameters values are stored as string and accessible like a python dict
-        self.cuda = strtobool(param_map["cuda"])
-        self.model_name = param_map["model_name"]
-        self.pretrained = strtobool(param_map["checkpoint"])
-        self.checkpoint_path = param_map["checkpoint_path"]
-        self.background = strtobool(param_map["background_idx"])
-        self.update = strtobool(param_map["update"])
+        self.cuda = strtobool(params["cuda"])
+        self.model_name = params["model_name"]
+        self.pretrained = strtobool(params["checkpoint"])
+        self.checkpoint_path = params["checkpoint_path"]
+        self.background = strtobool(params["background_idx"])
+        self.update = strtobool(params["update"])
 
-    def getParamMap(self):
+    def get_values(self):
         # Send parameters values to Ikomia application
         # Create the specific dict structure (string container)
-        param_map = core.ParamMap()
-        param_map["cuda"] = str(self.cuda)
-        param_map["model_name"] = str(self.model_name)
-        param_map["checkpoint"] = str(self.checkpoint)
-        param_map["checkpoint_path"] = self.checkpoint_path
-        param_map["background_idx"] = str(self.background)
-        param_map["update"] = str(self.update)
-        return param_map
+        params = {
+            "cuda": str(self.cuda),
+            "model_name": str(self.model_name),
+            "checkpoint": str(self.checkpoint),
+            "checkpoint_path": self.checkpoint_path,
+            "background_idx": str(self.background),
+            "update": str(self.update)}
+        return params
 
 
 # --------------------
 # - Class which implements the process
 # - Inherits PyCore.CWorkflowTask or derived from Ikomia API
 # --------------------
-class InferHuggingFaceSemanticSegmentation(dataprocess.C2dImageTask):
+class InferHuggingFaceSemanticSegmentation(dataprocess.CSemanticSegmentationTask):
 
     def __init__(self, name, param):
-        dataprocess.C2dImageTask.__init__(self, name)
-        # Add input/output of the process here
-        self.addOutput(dataprocess.CSemanticSegIO())
+        dataprocess.CSemanticSegmentationTask.__init__(self, name)
         if param is None:
-            self.setParam(InferHuggingFaceSemanticSegmentationParam())
+            self.set_param_object(InferHuggingFaceSemanticSegmentationParam())
         else:
-            self.setParam(copy.deepcopy(param))
+            self.set_param_object(copy.deepcopy(param))
 
         # Detect if we have a GPU available
         self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         self.model = None
         self.feature_extractor = None
-        self.colors = None
         self.classes = None
         self.update = False
 
-    def getProgressSteps(self):
+    def get_progress_steps(self):
         # Function returning the number of progress steps for this process
         # This is handled by the main progress bar of Ikomia application
         return 1
 
     def infer(self, image):
-        param = self.getParam()
+        param = self.get_param_object()
 
         # Image pre-pocessing (image transformation and conversion to PyTorch tensor)
         pixel_val = self.feature_extractor(image, return_tensors="pt", resample=0).pixel_values
@@ -120,31 +115,29 @@ class InferHuggingFaceSemanticSegmentation(dataprocess.C2dImageTask):
         pred_seg = upsampled_logits.argmax(dim=1)[0]
 
         # Get output :
-        semantic_output = self.getOutput(1)
+        semantic_output = self.get_output(1)
 
         # dstImage
         dst_image = pred_seg.cpu().detach().numpy().astype(dtype=np.uint8)
 
         # Get mask
-        self.setOutputColorMap(0, 1, self.colors)
+        self.set_names(self.classes)
 
-        semantic_output.setMask(dst_image)
+        self.set_mask(dst_image)
 
-        semantic_output.setClassNames(self.classes, self.colors)
-
-        self.forwardInputImage(0, 0)
+        self.forward_input_image(0, 0)
 
     def run(self):
         # Core function of your process
-        # Call beginTaskRun for initialization
-        self.beginTaskRun()
+        # Call begin_task_run for initialization
+        self.begin_task_run()
 
-        image_in = self.getInput(0)
+        image_in = self.get_input(0)
 
         # Get image from input/output (numpy array):
-        image = image_in.getImage()
+        image = image_in.get_image()
 
-        param = self.getParam()
+        param = self.get_param_object()
 
         if param.update or self.model is None:
             model_id = None
@@ -169,28 +162,16 @@ class InferHuggingFaceSemanticSegmentation(dataprocess.C2dImageTask):
             # Get label name
             self.classes = list(self.model.config.id2label.values())
 
-            # Color palette
-            n = len(self.classes)
-            random.seed(14)
-            if param.background is True:
-                self.colors = [[0,0,0]]
-                for i in range(n-1):
-                    self.colors.append(random.choices(range(256), k=3))
-            else:
-                self.colors = []
-                for i in range(n):
-                    self.colors.append(random.choices(range(256), k=3))
-
             param.update = False
 
         # Inference
         self.infer(image)
 
         # Step progress bar:
-        self.emitStepProgress()
+        self.emit_step_progress()
 
-        # Call endTaskRun to finalize process
-        self.endTaskRun()
+        # Call end_task_run to finalize process
+        self.end_task_run()
 
 
 # --------------------
@@ -203,7 +184,7 @@ class InferHuggingFaceSemanticSegmentationFactory(dataprocess.CTaskFactory):
         dataprocess.CTaskFactory.__init__(self)
         # Set process information as string here
         self.info.name = "infer_huggingface_semantic_segmentation"
-        self.info.shortDescription = "Semantic segmentation using models from Hugging Face."
+        self.info.short_description = "Semantic segmentation using models from Hugging Face."
         self.info.description = "This plugin proposes inference for semantic segmentation "\
                                 "using transformers models from Hugging Face. It regroups "\
                                 "models covered by the Hugging Face class: "\
@@ -211,8 +192,8 @@ class InferHuggingFaceSemanticSegmentationFactory(dataprocess.CTaskFactory):
                                 "from your fine-tuned model (local) or from the Hugging Face Hub."
         # relative path -> as displayed in Ikomia application process tree
         self.info.path = "Plugins/Python/Segmentation"
-        self.info.version = "1.0.0"
-        self.info.iconPath = "icons/icon.png"
+        self.info.version = "1.1.0"
+        self.info.icon_path = "icons/icon.png"
         self.info.authors = "Thomas Wolf, Lysandre Debut, Victor Sanh, Julien Chaumond, "\
                             "Clement Delangue, Anthony Moi, Pierric Cistac, Tim Rault, "\
                             "Rémi Louf, Morgan Funtowicz, Joe Davison, Sam Shleifer, "\
@@ -223,7 +204,7 @@ class InferHuggingFaceSemanticSegmentationFactory(dataprocess.CTaskFactory):
         self.info.journal = "EMNLP"
         self.info.license = "Apache License Version 2.0"
         # URL of documentation
-        self.info.documentationLink = "https://www.aclweb.org/anthology/2020.emnlp-demos.6"
+        self.info.documentation_link = "https://www.aclweb.org/anthology/2020.emnlp-demos.6"
         # Code source repository
         self.info.repository = "https://github.com/huggingface/transformers"
         # Keywords used for search
