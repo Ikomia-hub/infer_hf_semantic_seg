@@ -114,9 +114,6 @@ class InferHuggingFaceSemanticSegmentation(dataprocess.CSemanticSegmentationTask
 
         pred_seg = upsampled_logits.argmax(dim=1)[0]
 
-        # Get output :
-        semantic_output = self.get_output(1)
-
         # dstImage
         dst_image = pred_seg.cpu().detach().numpy().astype(dtype=np.uint8)
 
@@ -124,8 +121,6 @@ class InferHuggingFaceSemanticSegmentation(dataprocess.CSemanticSegmentationTask
         self.set_names(self.classes)
 
         self.set_mask(dst_image)
-
-        self.forward_input_image(0, 0)
 
     def run(self):
         # Core function of your process
