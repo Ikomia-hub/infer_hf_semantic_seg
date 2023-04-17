@@ -38,32 +38,32 @@ class InferHuggingFaceSemanticSegmentationParam(core.CWorkflowTaskParam):
     def __init__(self):
         core.CWorkflowTaskParam.__init__(self)
         # Place default value initialization here
+        self.model_name_or_path = ""
         self.cuda = torch.cuda.is_available()
         self.model_name = "nvidia/segformer-b2-finetuned-ade-512-512"
-        self.checkpoint = False
-        self.checkpoint_path = ""
-        self.background = False
+        self.use_custom_model = False
+        self.model_path = ""
         self.update = False
 
     def set_values(self, params):
         # Set parameters values from Ikomia application
         # Parameters values are stored as string and accessible like a python dict
+        self.model_name_or_path = params["model_name_or_path"]
         self.cuda = strtobool(params["cuda"])
         self.model_name = params["model_name"]
-        self.pretrained = strtobool(params["checkpoint"])
-        self.checkpoint_path = params["checkpoint_path"]
-        self.background = strtobool(params["background_idx"])
+        self.pretrained = strtobool(params["use_custom_model"])
+        self.model_path = params["model_path"]
         self.update = strtobool(params["update"])
 
     def get_values(self):
         # Send parameters values to Ikomia application
         # Create the specific dict structure (string container)
         params = {
+            "model_name_or_path": str(self.model_name_or_path),
             "cuda": str(self.cuda),
             "model_name": str(self.model_name),
-            "checkpoint": str(self.checkpoint),
-            "checkpoint_path": self.checkpoint_path,
-            "background_idx": str(self.background),
+            "use_custom_model": str(self.use_custom_model),
+            "model_path": self.model_path,
             "update": str(self.update)}
         return params
 
@@ -137,16 +137,30 @@ class InferHuggingFaceSemanticSegmentation(dataprocess.CSemanticSegmentationTask
         if param.update or self.model is None:
             model_id = None
             # Feature extractor selection
-            if param.checkpoint is False:
-                model_id = param.model_name
-                self.feature_extractor = AutoFeatureExtractor.from_pretrained(model_id)
+            if param.model_name_or_path == "":
+                if param.use_custom_model is False:
+                    model_id = param.model_name
+                    self.feature_extractor = AutoFeatureExtractor.from_pretrained(model_id)
+                else:
+                    model_list_path = os.path.join(param.model_path, "config.json")
+                    model_id = param.model_path
+                    with open(str(model_list_path), "r") as f:
+                        model_name_list = json.load(f)
+                    feature_extractor_id = model_name_list['_name_or_path']
+                    self.feature_extractor = AutoFeatureExtractor.from_pretrained(feature_extractor_id)
             else:
-                model_list_path = os.path.join(param.checkpoint_path, "config.json")
-                model_id = param.checkpoint_path
-                with open(str(model_list_path), "r") as f:
-                    model_name_list = json.load(f)
-                feature_extractor_id = model_name_list['_name_or_path']
-                self.feature_extractor = AutoFeatureExtractor.from_pretrained(feature_extractor_id)
+                param.model_path = param.model_name_or_path
+                preprocess_config = os.path.join(param.model_path, "preprocessor_config.json")
+                if not os.path.exists(preprocess_config): # Check if the model is from local or from huggingface hub
+                    model_id = param.model_name
+                    self.feature_extractor = AutoFeatureExtractor.from_pretrained(model_id)
+                else:
+                    model_list_path = os.path.join(param.model_path, "config.json")
+                    model_id = param.model_path
+                    with open(str(model_list_path), "r") as f:
+                        model_name_list = json.load(f)
+                    feature_extractor_id = model_name_list['_name_or_path']
+                    self.feature_extractor = AutoFeatureExtractor.from_pretrained(feature_extractor_id)
 
             # Loading model weight
             self.model = AutoModelForSemanticSegmentation.from_pretrained(model_id)
