@@ -67,7 +67,7 @@ class InferHuggingFaceSemanticSegmentationWidget(core.CWorkflowTaskWidget):
         # Loading moadel from checkpoint path
         self.browse_ckpt = pyqtutils.append_browse_file(self.gridLayout,
                                                         label="Checkpoint path (Folder)",
-                                                        path=self.parameters.model_path,
+                                                        path=self.parameters.model_weight_file,
                                                         mode=QFileDialog.Directory)
 
         self.browse_ckpt.setVisible(self.check_checkoint.isChecked())
@@ -101,7 +101,7 @@ class InferHuggingFaceSemanticSegmentationWidget(core.CWorkflowTaskWidget):
         self.parameters.model_name = self.combo_model.currentText()
         self.parameters.cuda = self.check_cuda.isChecked()
         self.parameters.use_custom_model = self.check_checkoint.isChecked()
-        self.parameters.model_path = self.browse_ckpt.path
+        self.parameters.model_weight_file = self.browse_ckpt.path
 
         # Send signal to launch the process
         self.emit_apply(self.parameters)
