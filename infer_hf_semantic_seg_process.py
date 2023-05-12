@@ -33,7 +33,7 @@ import json
 # - Class to handle the process parameters
 # - Inherits PyCore.CWorkflowTaskParam from Ikomia API
 # --------------------
-class InferHuggingFaceSemanticSegmentationParam(core.CWorkflowTaskParam):
+class InferHfSemanticSegParam(core.CWorkflowTaskParam):
 
     def __init__(self):
         core.CWorkflowTaskParam.__init__(self)
@@ -69,12 +69,12 @@ class InferHuggingFaceSemanticSegmentationParam(core.CWorkflowTaskParam):
 # - Class which implements the process
 # - Inherits PyCore.CWorkflowTask or derived from Ikomia API
 # --------------------
-class InferHuggingFaceSemanticSegmentation(dataprocess.CSemanticSegmentationTask):
+class InferHfSemanticSeg(dataprocess.CSemanticSegmentationTask):
 
     def __init__(self, name, param):
         dataprocess.CSemanticSegmentationTask.__init__(self, name)
         if param is None:
-            self.set_param_object(InferHuggingFaceSemanticSegmentationParam())
+            self.set_param_object(InferHfSemanticSegParam())
         else:
             self.set_param_object(copy.deepcopy(param))
 
@@ -171,12 +171,12 @@ class InferHuggingFaceSemanticSegmentation(dataprocess.CSemanticSegmentationTask
 # - Factory class to build process object
 # - Inherits PyDataProcess.CTaskFactory from Ikomia API
 # --------------------
-class InferHuggingFaceSemanticSegmentationFactory(dataprocess.CTaskFactory):
+class InferHfSemanticSegFactory(dataprocess.CTaskFactory):
 
     def __init__(self):
         dataprocess.CTaskFactory.__init__(self)
         # Set process information as string here
-        self.info.name = "infer_huggingface_semantic_segmentation"
+        self.info.name = "infer_hf_semantic_seg"
         self.info.short_description = "Semantic segmentation using models from Hugging Face."
         self.info.description = "This plugin proposes inference for semantic segmentation "\
                                 "using transformers models from Hugging Face. It regroups "\
@@ -206,4 +206,4 @@ class InferHuggingFaceSemanticSegmentationFactory(dataprocess.CTaskFactory):
 
     def create(self, param=None):
         # Create process object
-        return InferHuggingFaceSemanticSegmentation(self.info.name, param)
+        return InferHfSemanticSeg(self.info.name, param)

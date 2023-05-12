@@ -30,10 +30,10 @@ class IkomiaPlugin(dataprocess.CPluginProcessInterface):
 
     def get_process_factory(self):
         # Instantiate process object
-        from infer_huggingface_semantic_segmentation.infer_huggingface_semantic_segmentation_process import InferHuggingFaceSemanticSegmentationFactory
-        return InferHuggingFaceSemanticSegmentationFactory()
+        from infer_hf_semantic_seg.infer_hf_semantic_seg_process import InferHfSemanticSegFactory
+        return InferHfSemanticSegFactory()
 
     def get_widget_factory(self):
         # Instantiate associated widget object
-        from infer_huggingface_semantic_segmentation.infer_huggingface_semantic_segmentation_widget import InferHuggingFaceSemanticSegmentationWidgetFactory
-        return InferHuggingFaceSemanticSegmentationWidgetFactory()
+        from infer_hf_semantic_seg.infer_hf_semantic_seg_widget import InferHfSemanticSegWidgetFactory
+        return InferHfSemanticSegWidgetFactory()
