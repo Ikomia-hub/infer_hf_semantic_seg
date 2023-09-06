@@ -1,28 +1,117 @@
-# infer_huggingface_semantic_segmentation
+<div align="center">
+  <img src="https://raw.githubusercontent.com/Ikomia-hub/infer_hf_semantic_seg/main/icons/icon.png" alt="Algorithm icon">
+  <h1 align="center">infer_hf_semantic_seg</h1>
+</div>
+<br />
+<p align="center">
+    <a href="https://github.com/Ikomia-hub/infer_hf_semantic_seg">
+        <img alt="Stars" src="https://img.shields.io/github/stars/Ikomia-hub/infer_hf_semantic_seg">
+    </a>
+    <a href="https://app.ikomia.ai/hub/">
+        <img alt="Website" src="https://img.shields.io/website/http/app.ikomia.ai/en.svg?down_color=red&down_message=offline&up_message=online">
+    </a>
+    <a href="https://github.com/Ikomia-hub/infer_hf_semantic_seg/blob/main/LICENSE.md">
+        <img alt="GitHub" src="https://img.shields.io/github/license/Ikomia-hub/infer_hf_semantic_seg.svg?color=blue">
+    </a>    
+    <br>
+    <a href="https://discord.com/invite/82Tnw9UGGc">
+        <img alt="Discord community" src="https://img.shields.io/badge/Discord-white?style=social&logo=discord">
+    </a> 
+</p>
 
-This plugin proposes inference for semantic segmentation using transformer models from Hugging Face. 
+This plugin proposes inference for semantic segmentation using transformers models from Hugging Face. It regroups models covered by the Hugging Face class: AutoModelForSemanticSegmentation. Models can be loaded either from your fine-tuned model (local) or from the Hugging Face Hub.
 
-Models can be loaded from:
+[Insert illustrative image here. Image must be accessible publicly, in algorithm Github repository for example.
+<img src="images/illustration.png"  alt="Illustrative image" width="30%" height="30%">]
 
-- Your fine-tuned model (local path folder containing model weights and config file)
+## :rocket: Use with Ikomia API
 
-- The [Hugging Face Hub](https://huggingface.co/models?pipeline_tag=image-segmentation) using the model name, e.g.:  
-    - [nvidia/segformer-b5-finetuned-ade-640-640](https://huggingface.co/nvidia/segformer-b5-finetuned-ade-640-640) 
-    - [microsoft/beit-base-finetuned-ade-640-640](https://huggingface.co/microsoft/beit-base-finetuned-ade-640-640)
+#### 1. Install Ikomia API
 
+We strongly recommend using a virtual environment. If you're not sure where to start, we offer a tutorial [here](https://www.ikomia.ai/blog/a-step-by-step-guide-to-creating-virtual-environments-in-python).
 
+```sh
+pip install ikomia
+```
 
+#### 2. Create your workflow
 
-The following models can be use with this plugin: 
+[Change the sample image URL to fit algorithm purpose]
 
--	BEiT 
+```python
+import ikomia
+from ikomia.dataprocess.workflow import Workflow
 
--	Data2VecVision 
+# Init your workflow
+wf = Workflow()
 
--	DPT 
+# Add algorithm
+algo = wf.add_task(name="infer_hf_semantic_seg", auto_connect=True)
 
--	MobileNetV2 
+# Run on your image  
+wf.run_on(url="example_image.png")
+```
 
--	MobileViT 
+## :sunny: Use with Ikomia Studio
 
--	SegFormer 
+Ikomia Studio offers a friendly UI with the same features as the API.
+
+- If you haven't started using Ikomia Studio yet, download and install it from [this page](https://www.ikomia.ai/studio).
+
+- For additional guidance on getting started with Ikomia Studio, check out [this blog post](https://www.ikomia.ai/blog/how-to-get-started-with-ikomia-studio).
+
+## :pencil: Set algorithm parameters
+
+[Explain each algorithm parameters]
+
+[Change the sample image URL to fit algorithm purpose]
+
+```python
+import ikomia
+from ikomia.dataprocess.workflow import Workflow
+
+# Init your workflow
+wf = Workflow()
+
+# Add algorithm
+algo = wf.add_task(name="infer_hf_semantic_seg", auto_connect=True)
+
+algo.set_parameters({
+    "param1": "value1",
+    "param2": "value2",
+    ...
+})
+
+# Run on your image  
+wf.run_on(url="example_image.png")
+
+```
+
+## :mag: Explore algorithm outputs
+
+Every algorithm produces specific outputs, yet they can be explored them the same way using the Ikomia API. For a more in-depth understanding of managing algorithm outputs, please refer to the [documentation](https://ikomia-dev.github.io/python-api-documentation/advanced_guide/IO_management.html).
+
+```python
+import ikomia
+from ikomia.dataprocess.workflow import Workflow
+
+# Init your workflow
+wf = Workflow()
+
+# Add algorithm
+algo = wf.add_task(name="infer_hf_semantic_seg", auto_connect=True)
+
+# Run on your image  
+wf.run_on(url="example_image.png")
+
+# Iterate over outputs
+for output in algo.get_outputs()
+    # Print information
+    print(output)
+    # Export it to JSON
+    output.to_json()
+```
+
+## :fast_forward: Advanced usage 
+
+[optional]
