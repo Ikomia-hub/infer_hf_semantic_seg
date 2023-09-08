@@ -19,10 +19,9 @@
     </a> 
 </p>
 
-This plugin proposes inference for semantic segmentation using transformers models from Hugging Face. It regroups models covered by the Hugging Face class: AutoModelForSemanticSegmentation. Models can be loaded either from your fine-tuned model (local) or from the Hugging Face Hub.
+This plugin proposes inference for semantic segmentation using transformers models from Hugging Face. 
 
-[Insert illustrative image here. Image must be accessible publicly, in algorithm Github repository for example.
-<img src="images/illustration.png"  alt="Illustrative image" width="30%" height="30%">]
+![LR port semantic segmentation](https://raw.githubusercontent.com/Ikomia-hub/infer_hf_semantic_seg/main/icons/output.jpg)
 
 ## :rocket: Use with Ikomia API
 
@@ -36,11 +35,9 @@ pip install ikomia
 
 #### 2. Create your workflow
 
-[Change the sample image URL to fit algorithm purpose]
-
 ```python
-import ikomia
 from ikomia.dataprocess.workflow import Workflow
+from ikomia.utils.displayIO import display
 
 # Init your workflow
 wf = Workflow()
@@ -49,7 +46,10 @@ wf = Workflow()
 algo = wf.add_task(name="infer_hf_semantic_seg", auto_connect=True)
 
 # Run on your image  
-wf.run_on(url="example_image.png")
+wf.run_on(url="https://raw.githubusercontent.com/Ikomia-dev/notebooks/main/examples/img/img_LR.jpg")
+
+# Inpect your result
+display(algo.get_image_with_mask())
 ```
 
 ## :sunny: Use with Ikomia Studio
@@ -62,13 +62,16 @@ Ikomia Studio offers a friendly UI with the same features as the API.
 
 ## :pencil: Set algorithm parameters
 
-[Explain each algorithm parameters]
 
-[Change the sample image URL to fit algorithm purpose]
+- **model_name** (str) - default 'nvidia/segformer-b2-finetuned-ade-512-512': Name of the model. [Additional models available on HF](https://huggingface.co/models?sort=downloads&search=segformer)
+- **model_weight_file** (str, *optional*): Path to model weights file. 
+- **cuda** (bool): If True, CUDA-based inference (GPU). If False, run on CPU
+
+**Parameters** should be in **strings format**  when added to the dictionary.
 
 ```python
-import ikomia
 from ikomia.dataprocess.workflow import Workflow
+from ikomia.utils.displayIO import display
 
 # Init your workflow
 wf = Workflow()
@@ -77,14 +80,14 @@ wf = Workflow()
 algo = wf.add_task(name="infer_hf_semantic_seg", auto_connect=True)
 
 algo.set_parameters({
-    "param1": "value1",
-    "param2": "value2",
-    ...
+    "cuda": "True"
 })
 
 # Run on your image  
-wf.run_on(url="example_image.png")
+wf.run_on(url="https://raw.githubusercontent.com/Ikomia-dev/notebooks/main/examples/img/img_LR.jpg")
 
+# Inpect your result
+display(algo.get_image_with_mask())
 ```
 
 ## :mag: Explore algorithm outputs
@@ -111,7 +114,3 @@ for output in algo.get_outputs()
     # Export it to JSON
     output.to_json()
 ```
-
-## :fast_forward: Advanced usage 
-
-[optional]
