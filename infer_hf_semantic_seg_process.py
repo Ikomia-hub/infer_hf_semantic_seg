@@ -84,6 +84,8 @@ class InferHfSemanticSeg(dataprocess.CSemanticSegmentationTask):
         self.feature_extractor = None
         self.classes = None
         self.update = False
+        self.model_folder = os.path.join(os.path.dirname(os.path.realpath(__file__)), "weights")
+
 
     def get_progress_steps(self):
         # Function returning the number of progress steps for this process
@@ -136,7 +138,7 @@ class InferHfSemanticSeg(dataprocess.CSemanticSegmentationTask):
             # Feature extractor selection
             if param.model_weight_file == "": # Check if the model is from local or from huggingface hub
                 model_id = param.model_name
-                self.feature_extractor = AutoFeatureExtractor.from_pretrained(model_id)
+                self.feature_extractor = AutoFeatureExtractor.from_pretrained(model_id, cache_dir=self.model_folder)
             else:
                 model_folder_path = os.path.dirname(param.model_weight_file)
                 model_list_path = os.path.join(model_folder_path, "config.json")
@@ -144,10 +146,10 @@ class InferHfSemanticSeg(dataprocess.CSemanticSegmentationTask):
                 with open(str(model_list_path), "r") as f:
                     model_name_list = json.load(f)
                 feature_extractor_id = model_name_list['_name_or_path']
-                self.feature_extractor = AutoFeatureExtractor.from_pretrained(feature_extractor_id)
+                self.feature_extractor = AutoFeatureExtractor.from_pretrained(feature_extractor_id, cache_dir=self.model_folder)
 
             # Loading model weight
-            self.model = AutoModelForSemanticSegmentation.from_pretrained(model_id)
+            self.model = AutoModelForSemanticSegmentation.from_pretrained(model_id, cache_dir=self.model_folder)
             self.device = torch.device("cuda") if param.cuda else torch.device("cpu")
             self.model.to(self.device)
             print("Will run on {}".format(self.device.type))
