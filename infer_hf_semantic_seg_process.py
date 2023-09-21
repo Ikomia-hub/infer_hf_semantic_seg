@@ -134,11 +134,24 @@ class InferHfSemanticSeg(dataprocess.CSemanticSegmentationTask):
         param = self.get_param_object()
 
         if param.update or self.model is None:
+            param = self.get_param_object()
             model_id = None
             # Feature extractor selection
             if param.model_weight_file == "": # Check if the model is from local or from huggingface hub
                 model_id = param.model_name
-                self.feature_extractor = AutoFeatureExtractor.from_pretrained(model_id, cache_dir=self.model_folder)
+                try:
+                    self.feature_extractor = AutoFeatureExtractor.from_pretrained(
+                        model_id,
+                        cache_dir=self.model_folder,
+                        local_files_only=True
+                    )
+                except Exception as e:
+                    print(f"Failed with error: {e}. Trying without the local_files_only parameter...")
+                    self.feature_extractor = AutoFeatureExtractor.from_pretrained(
+                        model_id,
+                        cache_dir=self.model_folder
+                    )    
+
             else:
                 model_folder_path = os.path.dirname(param.model_weight_file)
                 model_list_path = os.path.join(model_folder_path, "config.json")
@@ -146,12 +159,36 @@ class InferHfSemanticSeg(dataprocess.CSemanticSegmentationTask):
                 with open(str(model_list_path), "r") as f:
                     model_name_list = json.load(f)
                 feature_extractor_id = model_name_list['_name_or_path']
-                self.feature_extractor = AutoFeatureExtractor.from_pretrained(feature_extractor_id, cache_dir=self.model_folder)
+                try: 
+                    self.feature_extractor = AutoFeatureExtractor.from_pretrained(
+                        feature_extractor_id,
+                        cache_dir=self.model_folder,
+                        local_files_only=True
+                    )
+                except Exception as e:
+                    print(f"Failed with error: {e}. Trying without the local_files_only parameter...")
+                    self.feature_extractor = AutoFeatureExtractor.from_pretrained(
+                        feature_extractor_id,
+                        cache_dir=self.model_folder,
+                    )
 
             # Loading model weight
-            self.model = AutoModelForSemanticSegmentation.from_pretrained(model_id, cache_dir=self.model_folder)
+            try: 
+                self.model = AutoModelForSemanticSegmentation.from_pretrained(
+                    model_id,
+                    cache_dir=self.model_folder,
+                    local_files_only=True
+                    )
+            except Exception as e:
+                print(f"Failed with error: {e}. Trying without the local_files_only parameter...") 
+                self.model = AutoModelForSemanticSegmentation.from_pretrained(
+                    model_id,
+                    cache_dir=self.model_folder,
+                    )
+        
             self.device = torch.device("cuda") if param.cuda else torch.device("cpu")
             self.model.to(self.device)
+
             print("Will run on {}".format(self.device.type))
 
             # Get label name
@@ -187,7 +224,7 @@ class InferHfSemanticSegFactory(dataprocess.CTaskFactory):
                                 "from your fine-tuned model (local) or from the Hugging Face Hub."
         # relative path -> as displayed in Ikomia application process tree
         self.info.path = "Plugins/Python/Segmentation"
-        self.info.version = "1.1.0"
+        self.info.version = "1.1.1"
         self.info.icon_path = "icons/icon.png"
         self.info.authors = "Thomas Wolf, Lysandre Debut, Victor Sanh, Julien Chaumond, "\
                             "Clement Delangue, Anthony Moi, Pierric Cistac, Tim Rault, "\
