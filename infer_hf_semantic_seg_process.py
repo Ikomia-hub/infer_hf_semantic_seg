@@ -217,11 +217,6 @@ class InferHfSemanticSegFactory(dataprocess.CTaskFactory):
         # Set process information as string here
         self.info.name = "infer_hf_semantic_seg"
         self.info.short_description = "Semantic segmentation using models from Hugging Face."
-        self.info.description = "This plugin proposes inference for semantic segmentation "\
-                                "using transformers models from Hugging Face. It regroups "\
-                                "models covered by the Hugging Face class: "\
-                                "AutoModelForSemanticSegmentation. Models can be loaded either "\
-                                "from your fine-tuned model (local) or from the Hugging Face Hub."
         # relative path -> as displayed in Ikomia application process tree
         self.info.path = "Plugins/Python/Segmentation"
         self.info.version = "1.1.1"
@@ -238,7 +233,8 @@ class InferHfSemanticSegFactory(dataprocess.CTaskFactory):
         # URL of documentation
         self.info.documentation_link = "https://www.aclweb.org/anthology/2020.emnlp-demos.6"
         # Code source repository
-        self.info.repository = "https://github.com/huggingface/transformers"
+        self.info.repository = "https://github.com/Ikomia-hub/infer_hf_semantic_seg"
+        self.info.original_repository = "https://github.com/huggingface/transformers"
         # Keywords used for search
         self.info.keywords = "semantic, segmentation, inference, transformer,"\
                             "Hugging Face, Pytorch, Segformer, DPT, Beit, data2vec"
