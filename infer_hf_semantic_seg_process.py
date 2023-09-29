@@ -238,6 +238,8 @@ class InferHfSemanticSegFactory(dataprocess.CTaskFactory):
         # Keywords used for search
         self.info.keywords = "semantic, segmentation, inference, transformer,"\
                             "Hugging Face, Pytorch, Segformer, DPT, Beit, data2vec"
+        self.info.algo_type = core.AlgoType.INFER
+        self.info.algo_tasks = "SEMANTIC_SEGMENTATION"
 
     def create(self, param=None):
         # Create process object
