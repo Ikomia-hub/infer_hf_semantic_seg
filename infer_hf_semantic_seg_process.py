@@ -186,7 +186,7 @@ class InferHfSemanticSeg(dataprocess.CSemanticSegmentationTask):
                     cache_dir=self.model_folder,
                     )
         
-            self.device = torch.device("cuda") if param.cuda else torch.device("cpu")
+            self.device = torch.device("cuda") if param.cuda and torch.cuda.is_available() else torch.device("cpu")
             self.model.to(self.device)
 
             print("Will run on {}".format(self.device.type))
