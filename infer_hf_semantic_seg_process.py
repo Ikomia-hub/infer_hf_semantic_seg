@@ -97,8 +97,9 @@ class InferHfSemanticSeg(dataprocess.CSemanticSegmentationTask):
 
         # Image pre-pocessing (image transformation and conversion to PyTorch tensor)
         pixel_val = self.feature_extractor(image, return_tensors="pt", resample=0).pixel_values
-        if param.cuda is True:
-            pixel_val = pixel_val.cuda()
+        if torch.cuda.is_available():
+            if param.cuda is True:
+                pixel_val = pixel_val.cuda()
 
         # Prediction
         outputs = self.model(pixel_val)
