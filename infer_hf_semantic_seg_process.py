@@ -198,7 +198,8 @@ class InferHfSemanticSeg(dataprocess.CSemanticSegmentationTask):
             param.update = False
 
         # Inference
-        self.infer(image)
+        with torch.no_grad():
+            self.infer(image)
 
         # Step progress bar:
         self.emit_step_progress()
