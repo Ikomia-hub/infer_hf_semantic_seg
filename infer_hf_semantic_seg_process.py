@@ -221,7 +221,7 @@ class InferHfSemanticSegFactory(dataprocess.CTaskFactory):
         self.info.short_description = "Semantic segmentation using models from Hugging Face."
         # relative path -> as displayed in Ikomia application process tree
         self.info.path = "Plugins/Python/Segmentation"
-        self.info.version = "1.1.1"
+        self.info.version = "1.1.2"
         self.info.icon_path = "icons/icon.png"
         self.info.authors = "Thomas Wolf, Lysandre Debut, Victor Sanh, Julien Chaumond, "\
                             "Clement Delangue, Anthony Moi, Pierric Cistac, Tim Rault, "\
